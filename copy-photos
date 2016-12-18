@@ -1,0 +1,116 @@
+#!/usr/pkg/bin/perl
+# Be sure to have ending '/'
+my $PUBLIC = '/home/makoto/public_html/';
+my $SEARCH  = '/e/tera/photo';
+   $SEARCH  = '/export/photo201504';
+   $SEARCH  = '/export/photo/20150502';
+   $SEARCH  = '/export/photo/2015july';
+   $SEARCH  = '/export/photo/201512';
+   $SEARCH  = '/export/photo/271CANON';
+
+if ($ENV{'SEARCH'}) { $SEARCH = $ENV{'SEARCH'};}
+
+use File::Find;
+use strict;
+use POSIX qw(strftime);
+use Getopt::Std;
+# http://www.ki.nu/~makoto/diary/2007/09/09/
+
+#use Time::localtime;
+
+my ($echo) = 'echo';
+#   $echo = 'echo';	# 'echo' for debug
+#  $echo = '';		# '' for real execution
+
+my @flist;
+my %counts;
+
+if ( ! -d $SEARCH ) { die "Directory \$SEARCH ($SEARCH) does not exist.\n";}
+
+my @subtargets = $SEARCH;
+our %found_directory;
+our (%opts);
+
+
+getopts('hvxd:',\%opts);
+if ( $opts{'h'} )  { usage(); exit}
+# executes only if -x is given
+if ( $opts{'x'} )  { $echo = '' } else { $echo = 'echo'}
+
+sub usage (){
+    print <<USAGE;
+  Synopsys:  $0 [-d days]
+    Where:   -d limit the days to 'days'
+USAGE
+}
+            #
+            # Wanted routine for File::Find's find().
+            #
+# This is preparation (like declaration of closure)
+            my $wanted_closure = sub {
+                add_target($File::Find::dir, $_, \@flist, \%counts);
+            };
+# This is acutal find
+            find($wanted_closure, @subtargets) if (@subtargets > 0);
+# print the commmand to be issued after this copy:
+
+if ( $echo eq 'echo') {
+   print " **** \$echo was $echo\n";
+   print " **** Now dry run looks fine, do it again with -x ***\n";
+}
+## print " **** Now dry run looks fine, do it again with -x ***\n";
+	print " **** Then you will do\n";
+	foreach my $d (keys %found_directory) {
+	    $d =~ s|/original||;
+	   print "env TPATH=$d make;\n";
+}
+
+#         my @found_directory_list = keys %found_directory;
+# 	print <<FOREACH;
+#  **** OR, 
+# 	foreach i ( @found_directory_list )
+# 	env TPATH=\$i make;
+# 	end;
+# FOREACH
+
+sub add_target($$\@\%){
+    my $dir = shift;
+    my $fname = shift;
+
+    if ($fname =~ /.jpg/i) {
+        my($dev,$ino,$mode,$nlink,$uid,$gid,$rdev,
+              $size,$atime,$mtime,$ctime,$blksize,$blocks) = stat($dir.'/'.$fname);
+        my ($sec, $min, $hour, $mday, $mon, $year) = localtime($mtime);
+#Usage: POSIX::strftime(fmt, sec, min, hour, mday, mon, year, wday = -1, yday = -1, isdst = -1)
+	
+	my ($datestring) = strftime "%a %b %e %H:%M:%S %Y", localtime($mtime);
+	if ( ($opts{'d'} !=0)  && ($mtime < time() - $opts{'d'} * 24 * 3600 )) {
+	    print 'skipping: '. $fname . $datestring ."\n";
+    	    next;}
+
+	$year += 1900;
+	$mon++;
+	my $directory = 
+		$PUBLIC. 
+		sprintf("p%02s", substr($year,2,2)).'/'.
+	        sprintf("%04s%02s%02s/original",$year, $mon, $mday);
+	if (! -d $directory ) {
+	    if ( -w $directory ) {
+		system ("$echo mkdir -p $directory"); }
+	    else {
+		print " $directory is not writable.\n"; }
+	}
+#	print $dir. '/'.$fname, ' '. $directory. "\n";
+	if ( $directory =~ /20130907/ ) {return;} # 避難訓練
+	if (! -d $directory ) {
+	    system ("$echo mkdir -p $directory");
+	    }
+	if (! -f $directory .'/'. $fname ) {
+	    print "copying $fname to $directory\n";
+	    system ("$echo cp -p $dir/$fname $directory"); 
+	    $found_directory{$directory}++;
+	}
+    }
+}
+__END__
+Control C won't be accepted

@@ -1,0 +1,92 @@
+#!/usr/pkg/bin/perl
+# $Id: exif-datetime,v 1.1 2009/05/01 08:15:16 makoto Exp $
+use strict;
+use Getopt::Std;
+our (@ARGV);
+
+my $EXIF =	'/usr/pkg/bin/exif';
+#y $CONVERT =	'/usr/pkg/bin/convert';
+my $date;
+my $time;
+# print join "\n", @ARGV;
+# print "\n";
+# -----------------------
+# usage
+#   perl exif-datetime *.JPG
+sub usage(){
+    print <<HELP;
+Synopsys: 
+    cd original
+    $0 [-z time_difference]  [-h] files
+
+    time_difference is the hour count to offset (-23 to +23)
+HELP
+    exit;
+}
+
+sub timeShift($$$) {
+    my $date   = shift;
+    my $time   = shift;
+    my $offset = shift;
+## 2008/09/06 18:40:40 +16
+## 2008/09/07 10:40:40
+    my($yy,$mm,$dd) = split('/',$date);
+    my($HH,$MM,$SS) = split(':',$time);
+
+    $HH += $offset;
+    if ($HH > 24 ) { $HH -= 24; $dd++;} # month boundary is not considered.
+    if ($HH < 0 )  { $HH += 24; $dd--;}
+    my @return = ( "$yy/$mm/$dd", "$HH:$MM:$SS");
+}
+
+
+# ---------------- M A I N  ------------------
+my %opts;
+getopts('h', \%opts);
+
+# if ($opts{'e'}) { print "-e said\n"};;
+if ($opts{'h'}) {usage();	exit;}
+
+if ($#ARGV == -1 ) { die " ** Argument required to process jpeg file(s).\n"; }
+
+foreach my $photo (@ARGV) {
+    if ( -r $photo ) {
+## > exif -l DSC_0025.JPG | grep -i date
+##   0x0132 Date and Time                   *      -      -      -      -   
+##   0x9003 Date and Time (original)        -      -      *      -      -   
+##   0x9004 Date and Time (digitized)       -      -      *      -      -   
+	# ---------------------------------------
+	# extract EXIF information from (EACH) file
+	open(EXIF, "$EXIF -t 0x0132 $photo |"); 
+#	open(EXIF, "$EXIF -t 0x9003 $photo |");	# 'Date and Time'
+	while(<EXIF>){
+	    if (/Value: (.*) (.*)/) {
+		$date = $1;
+		$time = $2;  }	}
+	$date =~ s/:/\//g;
+	if ($opts{'z'}) {
+	print $date, ' ', $time, " --> ";
+	($date, $time) = 
+	    timeShift($date, $time, $opts{'z'}); }
+	print $date, ' ', $time, "\n";
+	close(EXIF);
+	# ---------------------------------------
+	# issue rotate based on above information
+	my $br = '';
+	my $file_exists = 0;
+	my $comment = $photo;
+	   $comment =~ s/\.[Jj][Pp][Gg]//;
+	print $comment, "\n";
+	if ( ! -d '../comment' ) { system('mkdir ../comment')};
+	my $file = '../comment/'.$comment;
+	if ( -r $file) { 
+	    open(COMMENT,">> $file") || print "problem opening $file:$!\n";
+	    $br = "<br>\n";
+	} else {
+	    open(COMMENT,">  $file") || print "problem opening $file:$!\n";
+	}
+	print COMMENT  "$br$date $time<br>\n";
+	close(COMMENT);
+    } else { print "file $photo not found.\n";}
+}
+__END__

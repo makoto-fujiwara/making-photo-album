@@ -1,0 +1,94 @@
+#!/usr/pkg/bin/perl
+# $Id: exif-rotate,v 1.2 2013/12/14 00:36:35 makoto Exp $
+use strict;
+use Getopt::Std;
+our (@ARGV);
+
+my $EXIF =	'/usr/pkg/bin/exif';
+my $CONVERT =	'/usr/pkg/bin/convert';
+my $rotate =	$CONVERT. ' -rotate';
+my $angle  =   0;
+# print join "\n", @ARGV;
+# print "\n";
+# -----------------------
+# usage
+#   perl exif-rotate *.JPG
+sub usage(){
+    print <<HELP;
+Synopsys: 
+    cd original
+    $0  -e -h files
+
+HELP
+ exit;
+}
+
+my %opts;
+getopts('hef:', \%opts);
+my $manual_list =  '';
+my %MANUAL_LIST;
+# if ($opts{'e'}) { print "-e said\n"};;
+if ($opts{'h'}) {usage();	exit;}
+if ($opts{'f'}) { 
+    $manual_list = $opts{'f'};
+    print STDERR "reading $manual_list\n";
+    open(MANUAL,     $manual_list) || print "problem opening  $manual_list:$!\n";
+    while(<MANUAL>) {
+	my($photo, $rotation) = split ' ', $_;
+	$MANUAL_LIST{$photo} = $rotation;
+#	print "$photo -> $rotation\n";
+	}
+    close(MANUAL);
+}
+
+if ($#ARGV == -1 ) { die " ** Argument required to process jpeg file(s).\n"; }
+if ( $opts{'e'} eq '' ) { print "\'-e\' missing show just information only.\n";}
+
+if (! -d '../640x480' ) { die " 640x480 directory not created yet\n";}
+if (! -d '../thum' )    { die " thum  directory not created yet\n";}
+my @files640 = `ls ../640x480`;
+if ($#files640 < 0 ) {  die "Files in 640x480 directory nothing. OK ?\n";}
+
+
+foreach my $photo (@ARGV) {
+    my $rotation = '';
+    if ( -r $photo) {
+	# ---------------------------------------
+	$angle = 0;
+
+	# extract EXIF information from (EACH) file
+	if  ( -r  $manual_list) {
+	    $angle = $MANUAL_LIST{$photo};
+	} else {
+	    open(EXIF, "$EXIF -t 0x112 $photo |");
+	    while(<EXIF>){
+		if (/Value: (.*)/) {
+		    $rotation = $1;	    }	}
+	    close(EXIF);
+	# ---------------------------------------
+	# issue rotate based on above information
+	    if ( $rotation =~ /right - top/	||
+		 $rotation =~ /right-top/i	) { $angle = 90; }
+	    if ( $rotation =~ /top - left/	|| 
+		 $rotation =~ /top-left/i	)  { $angle = 0; }
+	    if ( $rotation =~ /left - bottom/	||
+		 $rotation =~ /left-bottom/i	)  { $angle = -90; }
+	}
+	if ($opts{'e'} && $angle != 0 ) {
+		 # do under this directory
+		 my $command = "mv $photo $photo.bak ; $rotate $angle $photo.bak $photo";
+		 system("$command");
+
+		 # do for thum nail
+		 $command = "(cd ../thum; mv $photo $photo.bak ; $rotate $angle $photo.bak $photo)";
+		 system("$command");
+		 
+		 # do for 640x400 size
+		 $command = "(cd ../640x480; mv $photo $photo.bak ; $rotate $angle $photo.bak $photo)";
+		 system("$command");
+	} else {
+	    print "$photo -> $rotation\n";
+	}
+    } else { print "file $photo not found\n";}
+    
+}
