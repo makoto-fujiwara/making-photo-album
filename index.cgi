@@ -4,6 +4,11 @@ use strict;
 require 'cgi-lib.pl';
 ReadParse();
 
+sub single($$);
+sub comment($);
+sub trail();
+sub header($);
+
 # set default prefix and suffix for photo file
    $c::PREF = 'dscn';
    $c::SUF = 'jpg';
@@ -63,11 +68,11 @@ else {
 trail();
 exit;
 # -----------------------------------------------------------
-sub trail  {
+sub trail()  {
     print "</body></html>\n";
 }
 
-sub header {
+sub header($) {
     my $title = shift;
     print "Last-Modified: ",scalar(gmtime($time)),"\n";
     print "Content-Type: text/html;charset=iso-2022-jp\n\n";
@@ -125,7 +130,7 @@ sub show_list {
     return $next;
 }
 # show single photo
-sub single {
+sub single($$) {
     my $photo   = shift;
     my $size    = shift;
     my %big = ('640x480','original',
@@ -157,7 +162,7 @@ sub single {
     print "(³ÈÂç½Ì¾¯)</a>\n";
 }
 # add comment for each photo
-sub comment {
+sub comment($) {
     my $file = shift;
 if ( -r $file ) {
 	open(COMMENT,$file) ;
@@ -239,4 +244,6 @@ sub top_link {
     print "</span><br>";
 }
 __END__
-
+Local Variables:
+mode: outline-minor
+End:
