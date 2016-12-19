@@ -4,11 +4,6 @@ use strict;
 require 'cgi-lib.pl';
 ReadParse();
 
-sub single($$);
-sub comment($);
-sub trail();
-sub header($);
-
 # set default prefix and suffix for photo file
    $c::PREF = 'dscn';
    $c::SUF = 'jpg';
@@ -17,7 +12,8 @@ my $COL  = 4;  ## three columns to display photo's
 # fixed directory names
 my $D640  = "640x480";
 my $DORG  = "original";
-my $DCOMM = "comment";
+my $DCOMM = "comment";	# the name of the directory for (short) comment
+my $DNOTE = "note";	# the name of the directory for note
 
 # Network Kanji Filter to output iso-2022-jp
 my $NKF   = '/usr/pkg/bin/nkf -j';
@@ -29,7 +25,7 @@ if ( -f "config.ph" ) {
 my ($TITLE) = $c::TITLE;
 my ($TOP_COMMENT) = $c::COMMENT;
 my $UP    = $TITLE;
-   $UP    =~ s/photo//; $UP =~ s|/||g;
+   $UP    =~ s/photo//; $UP =~ s|/||g; # not used for now ?
 
 # pickup from query string
 my $single_photo = $main::in{'photo'};
@@ -68,11 +64,11 @@ else {
 trail();
 exit;
 # -----------------------------------------------------------
-sub trail()  {
+sub trail  {
     print "</body></html>\n";
 }
 
-sub header($) {
+sub header {
     my $title = shift;
     print "Last-Modified: ",scalar(gmtime($time)),"\n";
     print "Content-Type: text/html;charset=iso-2022-jp\n\n";
@@ -129,8 +125,18 @@ sub show_list {
 	    print $photo;}    }
     return $next;
 }
+sub note {
+    my $file = shift;
+    my @note_lines;
+    if ( -r $file ) {
+	open(NOTE, $file) ;
+	@note_lines = <NOTE>;
+	close(NOTE);
+    }
+    return join ("\n", @note_lines);
+}
 # show single photo
-sub single($$) {
+sub single {
     my $photo   = shift;
     my $size    = shift;
     my %big = ('640x480','original',
@@ -138,6 +144,12 @@ sub single($$) {
     );
     my $comment = "$DCOMM/$c::PREF$photo";
     $comment =~ s/\.$c::SUF$//;
+
+    my $note = "$DNOTE/$c::PREF$photo";
+    $note =~ s/\.$c::SUF$//;
+
+    # get page structure if note/img_nnnn exists
+    my($note_text) =  note ($note);
 
     header($photo);
     print "<a href=\"./\">一覧</a><br>\n";
@@ -147,22 +159,29 @@ sub single($$) {
     }
     print "<br>\n";
 # prepare to link to next photo (by clicking img)
+    if ($note_text ) {
+	print "<table cellspacing=0 cellpadding=5 border=0><tr><td>\n";
+    }
     if ($next) { print "<a href=\"./?photo=$next&size=$size\">";}
     print "<img src=";
     print "\"$size/$c::PREF".$photo.".$c::SUF\" border=0>";
     if ($next) { print "</a>";}
-
     print "<br>\n";
     comment ($comment);
-    if ($next)  {print "<br>(写真をクリックすると次を表示します)";}
+    if ($next)  {print "(写真をクリックすると次を表示します)";}
     print " \n";
+    if ($note_text ) {
+	print "</td><td>\n";
+	print $note_text;
+	print "</td></tr></table>\n";	
+    }
 
     my $toggle = $big{"$size"};
     print "<a href=\"./?photo=$photo&size=$toggle\">";
     print "(拡大縮少)</a>\n";
 }
 # add comment for each photo
-sub comment($) {
+sub comment {
     my $file = shift;
 if ( -r $file ) {
 	open(COMMENT,$file) ;
@@ -244,6 +263,4 @@ sub top_link {
     print "</span><br>";
 }
 __END__
-Local Variables:
-mode: outline-minor
-End:
+
