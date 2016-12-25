@@ -92,6 +92,16 @@ background-color: #ffffff ;
 span.dark {
 background-color: #d8d8e0 ;
 }
+ pre { 
+  font-size: small;
+
+  padding:      0.5em;
+  border-color: #ffeeb0;
+  border-style: outset;
+  border-width: 1px;
+  background: #c8c8c8;
+  font-family:monospace;
+ }
 </STYLE>
 </head><body>
 HEADER
