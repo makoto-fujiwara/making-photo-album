@@ -19,7 +19,7 @@ my $DNOTE = "note";	# the name of the directory for note
 my $NKF   = '/usr/local/bin/nkf -j';
 
 if ( -f "config.ph" ) {
-    require 'config.ph';
+    require './config.ph';
 }
 # get title and comment for <title></title> and top page comment
 my ($TITLE) = $c::TITLE;
@@ -102,6 +102,11 @@ background-color: #d8d8e0 ;
   background: #c8c8c8;
   font-family:monospace;
  }
+span.frame {
+margin: 30px 30px;
+padding: 10px;
+border: medium solid #ff00ff;
+}
 </STYLE>
 </head><body>
 HEADER
