@@ -12,7 +12,9 @@ CONVERT	=	convert
 #			Also expectiong original/*.jpeg files
 #PATH?=  /home/makoto/public_html/p12/20121104
 #TPATH?=  /home/mayumi/public_html/chiba47/members/p/20161022
-TPATH?=  /home/makoto/public_html/p16/20160912
+#TPATH?=  /home/makoto/public_html/p18/20180329
+TPATH?=  /home/makoto/public_html/p19/20190201
+
 
 # -- Target Directories --
 ORIGNAL	=	original
