@@ -175,6 +175,12 @@ sub single {
     print "<br>\n";
 # prepare to link to next photo (by clicking img)
     if ($note_text ) {
+	print <<STYLE;
+<style> td.note{
+  font-size: x-large;
+  vertical-align: top;
+}</style>
+STYLE
 	print "<table cellspacing=0 cellpadding=5 border=0><tr><td>\n";
     }
     if ($next) { print "<a href=\"./?photo=$next&size=$size\">";}
@@ -186,7 +192,7 @@ sub single {
     if ($next)  {print "(写真をクリックすると次を表示します)";}
     print " \n";
     if ($note_text ) {
-	print "</td><td>\n";
+	print "</td><td class=\"note\">\n";
 	print $note_text;
 	print "</td></tr></table>\n";	
     }
