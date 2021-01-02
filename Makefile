@@ -20,9 +20,9 @@ TPATH?=  /home/makoto/public_html/p19/20190201
 ORIGNAL	=	original
 THUM	=	thum
 # directory name and also midsize pixcell size:
-MIDSIZE	=	640x480
+MIDSIZE	=	1024x768
 # -- Target Directories to be created --
-DIRECTORIES =	640x480 thum comment
+DIRECTORIES =	640x480 thum comment note
 
 # -- Target related --
 COOKIES = 			\
