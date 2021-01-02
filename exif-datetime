@@ -1,11 +1,11 @@
-#!/usr/pkg/bin/perl
+#!/usr/local/bin/perl
 # $Id: exif-datetime,v 1.1 2009/05/01 08:15:16 makoto Exp $
 use strict;
 use Getopt::Std;
 our (@ARGV);
 
-my $EXIF =	'/usr/pkg/bin/exif';
-#y $CONVERT =	'/usr/pkg/bin/convert';
+my $EXIF =	'/usr/local/bin/exif';
+#y $CONVERT =	'/usr/local/bin/convert';
 my $date;
 my $time;
 # print join "\n", @ARGV;

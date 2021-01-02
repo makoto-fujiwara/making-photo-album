@@ -1,4 +1,4 @@
-#!/usr/pkg/bin/perl
+#!/usr/local/bin/perl
 # Be sure to have ending '/'
 my $PUBLIC = '/home/makoto/public_html/';
 my $SEARCH  = '/e/tera/photo';
@@ -7,6 +7,7 @@ my $SEARCH  = '/e/tera/photo';
    $SEARCH  = '/export/photo/2015july';
    $SEARCH  = '/export/photo/201512';
    $SEARCH  = '/export/photo/271CANON';
+   $SEARCH  = '/home/makoto/photo/291CANON';
 
 if ($ENV{'SEARCH'}) { $SEARCH = $ENV{'SEARCH'};}
 

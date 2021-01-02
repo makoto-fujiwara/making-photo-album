@@ -1,11 +1,11 @@
-#!/usr/pkg/bin/perl
+#!/usr/local/bin/perl
 # $Id: exif-rotate,v 1.2 2013/12/14 00:36:35 makoto Exp $
 use strict;
 use Getopt::Std;
 our (@ARGV);
 
-my $EXIF =	'/usr/pkg/bin/exif';
-my $CONVERT =	'/usr/pkg/bin/convert';
+my $EXIF =	'/usr/local/bin/exif';
+my $CONVERT =	'/usr/local/bin/convert';
 my $rotate =	$CONVERT. ' -rotate';
 my $angle  =   0;
 # print join "\n", @ARGV;

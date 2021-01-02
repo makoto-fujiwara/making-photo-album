@@ -1,4 +1,4 @@
-#!/usr/pkg/bin/perl
+#!/usr/local/bin/perl
 # $Id: index.cgi,v 1.7 2009/11/07 07:00:15 makoto Exp $
 use strict;
 require 'cgi-lib.pl';
@@ -16,10 +16,10 @@ my $DCOMM = "comment";	# the name of the directory for (short) comment
 my $DNOTE = "note";	# the name of the directory for note
 
 # Network Kanji Filter to output iso-2022-jp
-my $NKF   = '/usr/pkg/bin/nkf -j';
+my $NKF   = '/usr/local/bin/nkf -j';
 
 if ( -f "config.ph" ) {
-    require 'config.ph';
+    require './config.ph';
 }
 # get title and comment for <title></title> and top page comment
 my ($TITLE) = $c::TITLE;
