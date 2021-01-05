@@ -13,14 +13,14 @@ CONVERT	=	convert
 #PATH?=  /home/makoto/public_html/p12/20121104
 #TPATH?=  /home/mayumi/public_html/chiba47/members/p/20161022
 #TPATH?=  /home/makoto/public_html/p18/20180329
-TPATH?=  /home/makoto/public_html/p20/20201222
+TPATH?=  /home/makoto/public_html/p21/20210105
 
 
 # -- Target Directories --
 ORIGNAL	=	original
 THUM	=	thum
 # directory name and also midsize pixcell size:
-MIDSIZE	=	640x480
+MIDSIZE	=	1024x768
 # -- Target Directories to be created --
 DIRECTORIES =	640x480 thum comment
 
