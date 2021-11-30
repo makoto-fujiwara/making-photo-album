@@ -50,6 +50,7 @@ my @thum;
 open(STDOUT,"|$NKF");
 
 if ( $query ) {
+    if ($size eq '') { $size = '640x480';}
     single($single_photo,$size);
 }
 else {
