@@ -3,8 +3,8 @@
 # See comment for the directory hirearchy.
 
 # -- Tools -- exif, perl script, ImageMagick tool.
-EXIF	=	exif
-EXIF_DATETIME =	${PWD}/exif-datetime
+EXIF	=	exif 
+EXIF_DATETIME =	${PWD}/exif-datetime 
 EXIF_ROTATE =	${PWD}/exif-rotate
 CONVERT	=	convert
 
@@ -13,7 +13,19 @@ CONVERT	=	convert
 #PATH?=  /home/makoto/public_html/p12/20121104
 #TPATH?=  /home/mayumi/public_html/chiba47/members/p/20161022
 #TPATH?=  /home/makoto/public_html/p18/20180329
-TPATH?=  /home/makoto/public_html/p21/20210105
+#PATH?=	  /home/makoto/public_html/p21/20211216
+#TPATH?=	  /home/makoto/public_html/p21/20211227i
+#PATH?=	  /home/makoto/public_html/project/executive/P/20220118
+#PATH?=	  /home/makoto/public_html/p22/20220307
+#PATH?=	  /home/makoto/public_html/project/SCIVAX/P/20220314
+#PATH?=	  /home/makoto/public_html/p22/20220302F
+#PATH?=	  /home/makoto/public_html/project/BEAMER/P/20220715
+#PATH?=	  /home/makoto/public_html/p22/20220814
+#TPATH?=	  /home/makoto/public_html/project/putty/P/20220814
+#PATH?=	  /home/makoto/public_html/project/Alignment/P/20220817
+TPATH?=	  /home/makoto/public_html/p22/20220823
+TPATH=	  /home/makoto/public_html/project/narita/P/20220830
+TPATH=	  /home/makoto/public_html/p22/20220830
 
 
 # -- Target Directories --
@@ -21,6 +33,7 @@ ORIGNAL	=	original
 THUM	=	thum
 # directory name and also midsize pixcell size:
 MIDSIZE	=	1024x768
+THUMBSIZE =	 180x120
 # -- Target Directories to be created --
 DIRECTORIES =	640x480 thum comment
 
@@ -31,7 +44,6 @@ COOKIES = 			\
 	${TPATH}/.640x480	\
 	${TPATH}/.date 		\
 	${TPATH}/.comment	\
-	${TPATH}/.rotate	\
 
 all: ${COOKIES}
 	cp -p    index.cgi ${TPATH}/
@@ -46,8 +58,7 @@ ${TPATH}/.mkdir:
 ${TPATH}/.thum:   ${TPATH}/.mkdir
 	( cd ${TPATH}/thum; \
 	for i in `/bin/ls ../original/` ; \
-	  do ${EXIF} -e -o $$i  ../original/$$i; \
-	  echo rc: $$rc; \
+	  do  ${CONVERT} -resize ${THUMBSIZE} ../original/$$i $$i; \
 	done)
 	touch   $@
 ${TPATH}/.640x480: ${TPATH}/.mkdir
@@ -63,10 +74,10 @@ ${TPATH}/.date:
 ${TPATH}/.comment:
 	echo	comment
 	touch   $@
-${TPATH}/.rotate:  ${TPATH}/.mkdir
-	(cd ${TPATH}/original; \
-	env LANG=C ${EXIF_ROTATE} -e * )
-	touch   $@
+#${TPATH}/.rotate:  ${TPATH}/.mkdir
+#	(cd ${TPATH}/original; \
+#	env LANG=C ${EXIF_ROTATE} -e * )
+#	touch   $@
 clean:  
 	(cd ${TPATH}; \
 	rm -f  ${COOKIES} ;\
