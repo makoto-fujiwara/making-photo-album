@@ -121,17 +121,13 @@ sub show_list {
     my $self = shift;
     my @list = @_;
 #    print `pwd`;
-
     my $pref = $c::PREF;
-    my $the_first_photo = $list[0];
-       $the_first_photo  =~ s/$pref//;				    
-       $the_first_photo  =~ s/\.$c::SUF//;	# strip to photo number only6
+    @list = map { s/$pref//; s/\.$c::SUF// } @list;	# strip to photo number only
 
+    my $the_first_photo = $list[0];
     my $showing = 0;	# to mark as this is it and to hilight pointer
     my $next;		# to return the next photo number (to link).
     foreach my $i (@list) {
-	$i =~ s/$pref//;
-	$i =~ s/\.$c::SUF//;	# strip to photo number only
 	chomp($i);
 	my $photo = "$size/$i";
 	if ($self eq $i ) {
