@@ -121,17 +121,22 @@ sub show_list {
     my $self = shift;
     my @list = @_;
 #    print `pwd`;
-    my $showing = 0;	# to mark as this is it.
+
+    my $pref = $c::PREF;
+    my $the_first_photo = $list[0];
+       $the_first_photo  =~ s/$pref//;				    
+       $the_first_photo  =~ s/\.$c::SUF//;	# strip to photo number only6
+
+    my $showing = 0;	# to mark as this is it and to hilight pointer
     my $next;		# to return the next photo number (to link).
     foreach my $i (@list) {
-	my $tmp = $c::PREF;
-	$i =~ s/$tmp//;
-	$i =~ s/\.$c::SUF//;
+	$i =~ s/$pref//;
+	$i =~ s/\.$c::SUF//;	# strip to photo number only
 	chomp($i);
 	my $photo = "$size/$i";
 	if ($self eq $i ) {
 	    $showing = 1;
-	    print "<span class=\"rev\">$i</span>\n";}
+	    print "<span class=\"rev\">$i</span>\n";}	# hilight the current number
 	else {
 	    print "<a href=\"./?photo=$i&size=$size\">$i</a>\n";
 	    if ($showing) { $next = $i; $showing = 0;}
@@ -139,6 +144,7 @@ sub show_list {
 
 	if ( -r $photo ) { 
 	    print $photo;}    }
+    if ($next eq '') { $next = $the_first_photo;}
     return $next;
 }
 sub note {
@@ -155,9 +161,7 @@ sub note {
 sub single {
     my $photo   = shift;
     my $size    = shift;
-    my %big = ('640x480','original',
-	    'original','640x480',
-    );
+    my %big = ('640x480','original', 'original','640x480' );
     my $comment = "$DCOMM/$c::PREF$photo";
     $comment =~ s/\.$c::SUF$//;
 
@@ -168,10 +172,10 @@ sub single {
     my($note_text) =  note ($note);
 
     header($photo);
-    print "<a href=\"./\">一覧</a><br>\n";
+    print "<a href=\"./\">List / 一覧</a><br>\n";
     my $next = show_list($photo,@thum);
     if ($size == 'original') {
-    print "<a href=\"./?photo=$photo&size=640x480\">縮少</a>\n";
+    print "<a href=\"./?photo=$photo&size=640x480\">zoom out / 縮少</a>\n";
     }
     print "<br>\n";
 # prepare to link to next photo (by clicking img)
@@ -190,7 +194,7 @@ STYLE
     if ($next) { print "</a>";}
     print "<br>\n";
     comment ($comment);
-    if ($next)  {print "(写真をクリックすると次を表示します)";}
+    if ($next)  {print "(click to next photo / 写真をクリックすると次を表示します)";}
     print " \n";
     if ($note_text ) {
 	print "</td><td class=\"note\">\n";
@@ -200,7 +204,7 @@ STYLE
 
     my $toggle = $big{"$size"};
     print "<a href=\"./?photo=$photo&size=$toggle\">";
-    print "(拡大縮少)</a>\n";
+    print "(Zoom in/out 拡大縮少)</a>\n";
 }
 # add comment for each photo
 sub comment {
