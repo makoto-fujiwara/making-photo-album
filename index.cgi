@@ -7,7 +7,7 @@ ReadParse();
 # set default prefix and suffix for photo file
    $c::PREF = 'dscn';
    $c::SUF = 'jpg';
-my $COL  = 4;  ## three columns to display photo's
+my $COL  = 8;  ## three columns to display photo's
 
 # fixed directory names
 my $D640  = "640x480";
@@ -226,7 +226,7 @@ foreach my $i (@thum) {
 	$href = "<a href=\"?photo=$photo&size=$DORG\">";
 	$a    = "</a>";    } 
     if ($column_count == 0) {  print "<tr>"}
-    print "<td>$href<img src=\"thum/$i\" border=0>$a ",$serial++,"<br>";    
+    print "<td>$href<img src=\"thum/$i\" border=0>$a ",$photo,"<br>";    
     my $comment = "$DCOMM/$i";
     $comment =~ s/\.$c::SUF$//;
     comment ($comment);
