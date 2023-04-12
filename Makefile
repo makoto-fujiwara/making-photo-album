@@ -3,17 +3,24 @@
 # See comment for the directory hirearchy.
 
 # -- Tools -- exif, perl script, ImageMagick tool.
-EXIF	=	exif
-EXIF_DATETIME =	${PWD}/exif-datetime
-EXIF_ROTATE =	${PWD}/exif-rotate
+EXIF	=	echo 
+EXIF_DATETIME =	echo 
+EXIF_ROTATE =	echo 
+
 CONVERT	=	convert
+EXIF   =       exif
+EXIF_DATETIME =        ${PWD}/exif-datetime
+EXIF_ROTATE =  ${PWD}/exif-rotate
+
+EXIF	=	echo 
+EXIF_DATETIME =	echo 
+EXIF_ROTATE =	echo 
+
 
 # -- TARGET PATH --- ,	you need edit this line.
 #			Also expectiong original/*.jpeg files
-#PATH?=  /home/makoto/public_html/p12/20121104
-#TPATH?=  /home/mayumi/public_html/chiba47/members/p/20161022
-#TPATH?=  /home/makoto/public_html/p18/20180329
-TPATH?=  /home/makoto/public_html/p21/20210105
+TPATH=  /home/makoto/public_html/sample/
+TPATH=  /home/makoto/public_html/sample2/
 
 
 # -- Target Directories --
@@ -46,7 +53,7 @@ ${TPATH}/.mkdir:
 ${TPATH}/.thum:   ${TPATH}/.mkdir
 	( cd ${TPATH}/thum; \
 	for i in `/bin/ls ../original/` ; \
-	  do ${EXIF} -e -o $$i  ../original/$$i; \
+	  do ${EXIF} -e -o $$i  ../original/$$i && echo OK \
 	  echo rc: $$rc; \
 	done)
 	touch   $@
@@ -58,7 +65,8 @@ ${TPATH}/.640x480: ${TPATH}/.mkdir
 	touch   $@
 ${TPATH}/.date:
 	(cd ${TPATH}/original; \
-	${EXIF_DATETIME} * )
+       ${EXIF_DATETIME} *  \
+	)
 	touch   $@
 ${TPATH}/.comment:
 	echo	comment

@@ -75,7 +75,7 @@ foreach my $photo (@ARGV) {
 	my $br = '';
 	my $file_exists = 0;
 	my $comment = $photo;
-	   $comment =~ s/\.[Jj][Pp][Gg]//;
+	   $comment =~ s/\.[^.]+$//;
 	print $comment, "\n";
 	if ( ! -d '../comment' ) { system('mkdir ../comment')};
 	my $file = '../comment/'.$comment;
