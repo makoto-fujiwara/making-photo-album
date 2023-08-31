@@ -55,7 +55,7 @@ if ( $query ) {
 else {
     header($TITLE);
 
-    print $#thum +1 , " photos";
+    print $#thum +1 , " photos: ";
     print $TOP_COMMENT, "<br>\n";
 ## print ", last update: ";
 ## print $time
@@ -183,7 +183,6 @@ sub single {
     if ($size == 'original') {
     print "<a href=\"./?photo=$photo&size=640x480\">½Ì¾¯</a>\n";
     }
-    print "<br>\n";
 
     if ($note_text ) {
 	print "<table cellspacing=0 cellpadding=5 border=0><tr><td>\n";
@@ -201,6 +200,8 @@ sub single {
     print "\"$size/$c::PREF".$photo.".$c::SUF\" border=0>";
     if ($note_text ) {
 	print "</td><td class=\"note\">\n";
+	print "<a href=\"./\">list (°ìÍ÷)</a> <br>(click left photo to go next page)<br><br>\n";
+
 	print $note_text;
 	print "</td></tr></table>\n";	
     }
