@@ -79,6 +79,13 @@ sub header {
 <head>
 <title>$title</title>
 <STYLE TYPE="text/css">
+table   {
+    border-color: white; /* not effective now */
+}
+td.note {
+    vertical-align: top;
+    text-aling: top
+}
  span.rev { 
 color: white; 
 background-color: #304050 ;
@@ -107,8 +114,7 @@ background-color: #d8d8e0 ;
 HEADER
 
 
-my $URL = $ENV{'REQUEST_URI'};
-top_link($URL);
+
 }
 # show list of photo/link just above the single photo
 sub show_list {
@@ -162,8 +168,8 @@ sub single {
     my($note_text) =  note ($note);
 
     header($photo);
-    print "<a href=\"./\">一覧</a><br>\n";
-    my $next = show_list($photo,@thum);
+# --------------------------------------------------------
+
     if ($size == 'original') {
     print "<a href=\"./?photo=$photo&size=640x480\">縮少</a>\n";
     }
@@ -172,23 +178,30 @@ sub single {
     if ($note_text ) {
 	print "<table cellspacing=0 cellpadding=5 border=0><tr><td>\n";
     }
-    if ($next) { print "<a href=\"./?photo=$next&size=$size\">";}
     print "<img src=";
     print "\"$size/$c::PREF".$photo.".$c::SUF\" border=0>";
-    if ($next) { print "</a>";}
-    print "<br>\n";
-    comment ($comment);
-    if ($next)  {print "(写真をクリックすると次を表示します)";}
-    print " \n";
     if ($note_text ) {
-	print "</td><td>\n";
+	print "</td><td class=\"note\">\n";
 	print $note_text;
 	print "</td></tr></table>\n";	
     }
 
     my $toggle = $big{"$size"};
+
+    print "<br>\n";
+    comment ($comment);
+
     print "<a href=\"./?photo=$photo&size=$toggle\">";
     print "(拡大縮少)</a>\n";
+    print "<a href=\"./\">一覧</a><br>\n";
+    my $next = show_list($photo,@thum);
+    if ($next) { print "<a href=\"./?photo=$next&size=$size\">";}
+    if ($next) { print "</a>";}
+    if ($next)  {print "(写真をクリックすると次を表示します)";}
+    print " \n";
+my $URL = $ENV{'REQUEST_URI'};
+    top_link($URL);
+
 }
 # add comment for each photo
 sub comment {

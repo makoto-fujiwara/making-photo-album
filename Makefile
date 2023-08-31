@@ -17,10 +17,22 @@ EXIF_DATETIME =	echo
 EXIF_ROTATE =	echo 
 
 
+
 # -- TARGET PATH --- ,	you need edit this line.
 #			Also expectiong original/*.jpeg files
 TPATH=  /home/makoto/public_html/sample/
 TPATH=  /home/makoto/public_html/sample2/
+TPATH=  /home/makoto/public_html/p23/20230404i/
+TPATH=  /home/makoto/public_html/project/cit-yasukawa/P/20230424
+TPATH=  /home/makoto/public_html/p23/20230529
+TPATH=  /home/makoto/public_html/project/Regulus8230/P/20221104
+TPATH=  /home/makoto/public_html/project/FileMaker/P/20230609
+TPATH=  /home/makoto/public_html/p21/20210105
+TPATH=  /home/makoto/public_html/project/raw-20230727
+TPATH=  /home/makoto/public_html/project/p/beamer
+TPATH=  /home/makoto/public_html/project/AGC-dmu/p/20230728
+TPATH=  /home/makoto/public_html/project/YNU-arakawa/yanagida/P/20230804
+TPATH=  /home/makoto/public_html/p23/20230828
 
 
 # -- Target Directories --
