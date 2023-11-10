@@ -55,7 +55,7 @@ if ( $query ) {
 else {
     header($TITLE);
 
-    print $#thum +1 , " photos: ";
+    print $#thum +1 , " photos";
     print $TOP_COMMENT, "<br>\n";
 ## print ", last update: ";
 ## print $time
@@ -79,13 +79,6 @@ sub header {
 <head>
 <title>$title</title>
 <STYLE TYPE="text/css">
-table   {
-    border-color: white; /* not effective now */
-}
-td.note {
-    vertical-align: top;
-    text-aling: top
-}
  span.rev { 
 color: white; 
 background-color: #304050 ;
@@ -114,40 +107,33 @@ background-color: #d8d8e0 ;
 HEADER
 
 
-
+my $URL = $ENV{'REQUEST_URI'};
+top_link($URL);
 }
 # show list of photo/link just above the single photo
 sub show_list {
     my $self = shift;
     my @list = @_;
-
 #    print `pwd`;
     my $showing = 0;	# to mark as this is it.
     my $next;		# to return the next photo number (to link).
-    my @TEXT;           # for delayed listing (store and return text)
-
     foreach my $i (@list) {
 	my $tmp = $c::PREF;
 	$i =~ s/$tmp//;
 	$i =~ s/\.$c::SUF//;
 	chomp($i);
 	my $photo = "$size/$i";
-	if ($self eq $i ) {		# mark as it is you, by inversion
+	if ($self eq $i ) {
 	    $showing = 1;
-
-	    push(@TEXT,
-	    	  "<span class=\"rev\">$i</span>\n" );}
-	else {				# normal link to photo
-
-	    push(@TEXT,
-	    	  "<a href=\"./?photo=$i&size=$size\">$i</a>\n");
-	    if ($showing) { $next = $i; $showing = 0;} # it was showing
+	    print "<span class=\"rev\">$i</span>\n";}
+	else {
+	    print "<a href=\"./?photo=$i&size=$size\">$i</a>\n";
+	    if ($showing) { $next = $i; $showing = 0;}
 	}
-	if ( -r $photo ) { 
-	    push(@TEXT, $photo) ;}
-    }
-    return ($next, @TEXT);
 
+	if ( -r $photo ) { 
+	    print $photo;}    }
+    return $next;
 }
 sub note {
     my $file = shift;
@@ -159,9 +145,7 @@ sub note {
     }
     return join ("\n", @note_lines);
 }
-# -----------------------------------------------------
-#       show single photo
-# -----------------------------------------------------
+# show single photo
 sub single {
     my $photo   = shift;
     my $size    = shift;
@@ -178,52 +162,33 @@ sub single {
     my($note_text) =  note ($note);
 
     header($photo);
-# --------------------------------------------------------
-
+    print "<a href=\"./\">一覧</a><br>\n";
+    my $next = show_list($photo,@thum);
     if ($size == 'original') {
     print "<a href=\"./?photo=$photo&size=640x480\">縮少</a>\n";
     }
-
+    print "<br>\n";
+# prepare to link to next photo (by clicking img)
     if ($note_text ) {
 	print "<table cellspacing=0 cellpadding=5 border=0><tr><td>\n";
     }
-    # -------------------------------
-    #   make link text first
-    # -------------------------------
-    my ($next, @TEXT)  = show_list($photo, @thum);
     if ($next) { print "<a href=\"./?photo=$next&size=$size\">";}
-    # -------------------------------
-    #   show single photo
-    # -------------------------------
-
     print "<img src=";
     print "\"$size/$c::PREF".$photo.".$c::SUF\" border=0>";
+    if ($next) { print "</a>";}
+    print "<br>\n";
+    comment ($comment);
+    if ($next)  {print "(写真をクリックすると次を表示します)";}
+    print " \n";
     if ($note_text ) {
-	print "</td><td class=\"note\">\n";
-	print "<a href=\"./\">list (一覧)</a> <br>(click left photo to go next page)<br><br>\n";
-
+	print "</td><td>\n";
 	print $note_text;
 	print "</td></tr></table>\n";	
     }
-    if ($next) { print "</a>";}
 
     my $toggle = $big{"$size"};
-
-    print "<br>\n";
-    comment ($comment);
-    print @TEXT;
-
     print "<a href=\"./?photo=$photo&size=$toggle\">";
-    print "(拡大縮少)</a><br>\n";
-
-    print "<a href=\"./\">一覧</a><br>\n";
-
-# prepare to link to next photo (by clicking img)
-    if ($next)  {print "(写真をクリックすると次を表示します)";}
-    print " \n";
-my $URL = $ENV{'REQUEST_URI'};
-    top_link($URL);
-
+    print "(拡大縮少)</a>\n";
 }
 # add comment for each photo
 sub comment {
