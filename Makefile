@@ -41,7 +41,7 @@ COOKIES = 			\
 all: ${COOKIES}
 	cp -p    index.cgi ${TPATH}/
 	chmod +x index.cgi ${TPATH}/
-	cp config.ph 	   ${TPATH}/
+	perl setup-config-ph ${TPATH}/original
 
 ${TPATH}/.mkdir:
 	(cd ${TPATH}; \
