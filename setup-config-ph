@@ -38,7 +38,8 @@ while (readdir(DIR)) {
 }
 close (DIR);
 
-open(CONFIG , "> $DIR/..c/onfig.ph") || die "Problem opening file to write: $!\n";
+              my $config = $DIR . '/../config.ph';
+open(CONFIG , "> $config") || die "Problem opening file to write: $!\n";
 
 foreach my $i (keys(%PREFIX)) {
     print $i . ' -- ' . $PREFIX{$i},"\n";
